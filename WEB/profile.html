@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"> 
+    <link rel="stylesheet" href="styles.css">
+
+
+
+
+    <style>
+        body.light-mode {
+            background: linear-gradient(180deg, rgba(236,232,231,1) 16%, rgba(217,206,199,0.926) 69%);
+            color: black;
+        }
+        body.dark-mode {
+            background-color: #1d1b1b;
+            color: white;
+        }
+        #theme-toggle {
+            margin: 10px;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .profile-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .dark-mode .profile-container {
+            background-color: #333333;
+            color: white;
+        }
+        .date-time-display, .greeting-display {
+            margin-top: 10px;
+            font-size: 1em;
+            text-align: center;
+            background: #ffffff; 
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .dark-mode .date-time-display, .dark-mode .greeting-display {
+            background: #444444;
+            color: #ffffff;
+        }
+        #theme-toggle {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            background-color: #284665;
+            color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.2s;
+            cursor: pointer;
+            text-align: center;
+            max-width: 250px;
+        }
+
+        #theme-toggle:hover {
+            background-color: #b30065;
+            transform: translateY(-2px);
+        }
+        #theme-toggle:active {
+            transform: translateY(1px);
+        }
+    </style>
+
+
+
+
+</head>
+<body class="light-mode">
+    <header>
+        <div class="container">
+            <h2>Bookverse</h2>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="genres.html">Book Genres</a></li>
+                    <li><a href="best-sellers.html">Best Sellers</a></li>
+                    <li><a href="recommendations.html">Recommendations</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+
+    <!-------------------------------------------greeting-----> 
+
+
+    <main class="container">
+        <div id="currentDateTime" class="date-time-display">Current Date and Time: </div>
+        <div id="greeting" class="greeting-display"></div>
+        
+        <script>
+            function formatDateTime(date) {
+                return date.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false });
+            }
+
+            function getGreeting() {
+                const hours = new Date().getHours();
+                if (hours >= 5 && hours < 12) return 'Good Morning!';
+                else if (hours >= 12 && hours < 18) return 'Good Afternoon!';
+                else return 'Good Evening!';
+            }
+
+            function updateDateTime() {
+                document.getElementById('currentDateTime').innerHTML = `Current Date and Time: ${formatDateTime(new Date())}`;
+                document.getElementById('greeting').innerHTML = `${getGreeting()}`;
+            }
+            
+            updateDateTime();
+            setInterval(updateDateTime, 60000);
+        </script>
+
+
+<!-------------------------------------------profile -----> 
+
+        <div class="profile-container">
+            <h3>User Profile</h3>
+            <form id="profile-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+            <button class="btn btn-danger mt-3" id="logout-button" style="display: none;">Log Out</button>
+            <div id="message" class="mt-3"></div>
+        </div>
+
+        <script>
+           
+            window.onload = function() {
+                const savedEmail = localStorage.getItem('email');
+                const savedPassword = localStorage.getItem('password'); 
+                if (savedEmail) document.getElementById('email').value = savedEmail;
+                if (savedPassword) document.getElementById('password').value = savedPassword;
+
+               
+                if (savedEmail && savedPassword) document.getElementById('logout-button').style.display = 'inline';
+            };
+
+           
+            document.getElementById('profile-form').onsubmit = function(event) {
+                event.preventDefault();
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                localStorage.setItem('email', email);
+                localStorage.setItem('password', password); 
+                
+                
+                document.getElementById('message').innerHTML = '<div class="alert alert-success">Profile updated successfully!</div>'; 
+                document.getElementById('logout-button').style.display = 'inline';
+            };
+
+            
+            document.getElementById('logout-button').onclick = function() {
+                if (!localStorage.getItem('email') || !localStorage.getItem('password')) {
+                    document.getElementById('message').innerHTML = '<div class="alert alert-warning">You need to be logged in to log out.</div>';
+                    return;
+                }
+                
+                localStorage.removeItem('email');
+                localStorage.removeItem('password'); 
+                document.getElementById('message').innerHTML = '<div class="alert alert-success">Logged out successfully!</div>'; 
+                document.getElementById('logout-button').style.display = 'none';
+
+                setTimeout(function() {
+                    window.location.href = 'profile.html'; 
+                }, 2000);
+            };
+        </script>
+
+
+<!----------------------------------------------light dark mode --> 
+
+
+        <button id="theme-toggle">Switch to Dark Mode</button>
+        <script>
+
+            function applyTheme(theme) {
+                document.body.classList.toggle('dark-mode', theme === 'dark');
+                document.body.classList.toggle('light-mode', theme === 'light');
+                document.getElementById('theme-toggle').textContent = theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+            }
+           
+
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(savedTheme);
+            
+            
+            document.getElementById('theme-toggle').addEventListener('click', () => {
+                const currentTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                applyTheme(newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+            
+        </script>
+
+
+
+
+    </main>
+
+    <footer>
+        <h3 style="color: white;">Bookverse</h3> 
+        <p style="color: white;">&copy; Togzhan Oral - September 2024</p>
+        <div class="social-icons">
+            <a href="https://twitter.com/"><img src="https://img.icons8.com/fluent/48/000000/twitter.png" alt="Twitter Icon"></a>
+            <a href="https://facebook.com/"><img src="https://img.icons8.com/fluent/48/000000/facebook-new.png" alt="Facebook Icon"></a>
+        </div>
+    </footer>
+</body>
+</html>
